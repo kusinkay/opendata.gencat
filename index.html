@@ -1,0 +1,38 @@
+<html><head>
+<meta charset="ISO-8859-1">
+<title>Dades obertes Generalitat de Catalunya</title>
+</head>
+<body>
+	<input type="text" id="txtQuery" name="query">
+	<input type="button" id="btnSearch" value="cercar">
+	<div id="layList"></div>
+
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#btnSearch').click(function(){
+		$.ajax({
+		    url: "https://analisi.transparenciacatalunya.cat/resource/ta2y-snj2.json",
+		    type: "GET",
+		    data: {
+		      "$limit" : 5000,
+		      "$where": "comarca_i_municipi LIKE '%" + $('#txtQuery').val() + "%' AND data_inici>'2018-09-28'"
+		    }
+		}).done(function(data) {
+			$('#layList').html("");
+			var content = "";
+		  	for (var i=0; i<data.length; i++){
+		  		if (data[i].imatges!=undefined){
+		  			imatges = data[i].imatges.split(",")
+		  		}
+		  		content += "<img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'>";
+		  		content += data[i].denominaci +"<br/>"
+		  	}
+		  	$('#layList').html(content);
+			console.log(data);
+		});
+	});
+	
+});
+</script>
+</body></html>
