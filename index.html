@@ -11,12 +11,33 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$('#btnSearch').click(function(){
+		var srchFields = [
+			'denominaci', 
+			'descripcio', 
+			'subt_tol', 
+			'tags_mbits', 
+			'tags_categor_es', 
+			'tags_altres_categor_es', 
+			'comarca_i_municipi', 
+			'espai', 
+			'localitat', 
+			'regi_o_pa_s'
+		];
+		var aWhere = [];
+		for (var i=0; i<srchFields.length; i++){
+			aWhere.push(srchFields[i] + " LIKE '%" + $('#txtQuery').val() + "%'"); 
+		}
+		var where = aWhere.join(" OR ");
+		
+		var today = new Date();
+		var sToday = today.getFullYear() + "-" + (today.getMonth()+1)  + "-" + today.getDate()
+		
 		$.ajax({
 		    url: "https://analisi.transparenciacatalunya.cat/resource/ta2y-snj2.json",
 		    type: "GET",
 		    data: {
 		      "$limit" : 5000,
-		      "$where": "comarca_i_municipi LIKE '%" + $('#txtQuery').val() + "%' AND data_inici>'2018-09-28'"
+		      "$where": "(" + where +") AND data_inici>'" + sToday + "'"
 		    }
 		}).done(function(data) {
 			$('#layList').html("");
@@ -25,10 +46,14 @@ $(document).ready(function(){
 		  		if (data[i].imatges!=undefined){
 		  			imatges = data[i].imatges.split(",")
 		  		}
-		  		content += "<img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'>";
-		  		content += data[i].denominaci +"<br/>"
+		  		content += "<img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'><br>";
+		  		content += data[i].denominaci +"<br>" 
+		  				+ data[i].comarca_i_municipi +"<br>"
+		  				+ data[i].data_inici +"<br>"
+		  				+ data[i].horari +"<br>"
+		  				+ "<br/>"
 		  	}
-		  	$('#layList').html(content);
+		  	$('#layList').html(content + sToday);
 			console.log(data);
 		});
 	});
