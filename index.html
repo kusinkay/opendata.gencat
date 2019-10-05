@@ -46,7 +46,17 @@ $(document).ready(function(){
 		  		if (data[i].imatges!=undefined){
 		  			imatges = data[i].imatges.split(",")
 		  		}
-		  		content += "<img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'><br>";
+		  		var href = "#"
+		  		if (data[i].enlla_os!=undefined){
+		  			hrefs = data[i].enlla_os.split(",");
+		  			for (var j=0; j<hrefs.length; j++){
+		  				if (hrefs[j].indexOf("gencat.cat")<0){
+		  					href = hrefs[j];
+		  					break;
+		  				}
+		  			}
+		  		}
+		  		content += "<a href='" + href + "'><img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'></a><br>";
 		  		content += data[i].denominaci +"<br>" 
 		  				+ data[i].comarca_i_municipi +"<br>"
 		  				+ data[i].data_inici +"<br>"
