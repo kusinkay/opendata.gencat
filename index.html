@@ -74,6 +74,7 @@ $(document).ready(function(){
 		  			imatges = data[i].imatges.split(",")
 		  		}
 		  		var href = "#"
+		  		var hrefs = [];
 		  		if (data[i].enlla_os!=undefined){
 		  			hrefs = data[i].enlla_os.split(",");
 		  			for (var j=0; j<hrefs.length; j++){
@@ -84,12 +85,19 @@ $(document).ready(function(){
 		  			}
 		  		}
 		  		content += "<a href='" + href + "'><img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'></a><br>";
-		  		content += data[i].denominaci +"<br>" 
+		  		content += data[i].denominaci +"<br>"
+		  		 		+ "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a><br>"
 		  				+ data[i].comarca_i_municipi +"<br>"
 		  				+ data[i].data_inici +"<br>"
 		  				+ data[i].horari +"<br>"
 		  				+ "<br/>";
-		  		content += "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a><br>";
+		  		if (hrefs.length>0){
+		  			content += "<p>Enllaços: <br>";
+		  			for (var j=0; j<hrefs.length; j++){
+		  				content += "<a href='" + hrefs[j] + "'>" + hrefs[j] + "</a><br>"
+		  			}
+		  			content += "</p>";
+		  		}
 		  		pos ++;
 		  	}
 		  	$('#layList').html(content + sToday);
