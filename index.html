@@ -1,16 +1,38 @@
 <html><head>
 <meta charset="ISO-8859-1">
 <title>Dades obertes Generalitat de Catalunya</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="js/qrcode.js"></script>
+<script type="text/javascript" src="js/qrcode_SJIS.js"></script>
+<script type="text/javascript" src="js/myqr.js"></script>
+ 
 </head>
 <body>
 	<input type="text" id="txtQuery" name="query">
 	<input type="button" id="btnSearch" value="cercar">
 	<div id="layList"></div>
+<div id="dialog">
+	<div id="qr"></div>
+</div>
 
-<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<form name ="qrForm" style="display:none">
+	<textarea rows="20" cols="20" name="msg" id="msg"></textarea>
+	<input type="text" name="t" value="0"/>
+	<input type="text" name="e" value="L"/>
+	<input type="text" name="m" value="Byte"/>
+	<input type="text" name="mb" value="UTF-8"/>
+</form>
+
 <script type="text/javascript">
+var events = [];
+var pos = 0;
 $(document).ready(function(){
+	
+	
 	$('#btnSearch').click(function(){
+		events = [];
 		var srchFields = [
 			'denominaci', 
 			'descripcio', 
@@ -41,8 +63,13 @@ $(document).ready(function(){
 		    }
 		}).done(function(data) {
 			$('#layList').html("");
+			pos = 0;
 			var content = "";
+			var codi = "";
 		  	for (var i=0; i<data.length; i++){
+		  		if (codi==data[i].codi) continue;
+		  		events.push(data[i]);
+		  		codi=data[i].codi;
 		  		if (data[i].imatges!=undefined){
 		  			imatges = data[i].imatges.split(",")
 		  		}
@@ -61,13 +88,45 @@ $(document).ready(function(){
 		  				+ data[i].comarca_i_municipi +"<br>"
 		  				+ data[i].data_inici +"<br>"
 		  				+ data[i].horari +"<br>"
-		  				+ "<br/>"
+		  				+ "<br/>";
+		  		content += "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a><br>";
+		  		pos ++;
 		  	}
 		  	$('#layList').html(content + sToday);
-			console.log(data);
+			console.log(events);
 		});
 	});
 	
 });
+function toICal(i){
+	var result = "BEGIN:VCALENDAR\n" + 
+		"VERSION:2.0\n" + 
+		"CALSCALE:GREGORIAN\n" + 
+		"BEGIN:VEVENT\n" + 
+		"SUMMARY:" +events[i].denominaci + "\n" + 
+		"DTSTART;TZID=Europe/Paris:" + iCalDate(events[i].data_inici) + "\n" + 
+		"DTEND;TZID=Europe/Paris:" + iCalDate(events[i].data_fi) + "\n" + 
+		"LOCATION:" + events[i].adre_a + "\n" + 
+		"DESCRIPTION:" + events[i].descripcio + "\n" + 
+		"STATUS:CONFIRMED\n" + 
+		"SEQUENCE:1\n" + 
+		"BEGIN:VALARM\n" + 
+		"TRIGGER:-PT10H\n" + 
+		"DESCRIPTION:Pickup Reminder\n" + 
+		"ACTION:DISPLAY\n" + 
+		"END:VALARM\n" + 
+		"END:VEVENT\n" + 
+		"END:VCALENDAR";
+	$('#msg').val(result);	
+	update_qrcode();
+	$('#dialog').dialog();
+	return result;
+}
+function iCalDate(gencatdate){
+	var result = gencatdate.replace(/-/g, "");
+	result = result.replace(/:/g, "");
+	
+	return result.substring(0, 15);
+}
 </script>
 </body></html>
