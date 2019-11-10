@@ -20,7 +20,7 @@
 <form name ="qrForm" style="display:none">
 	<textarea rows="20" cols="20" name="msg" id="msg"></textarea>
 	<input type="text" name="t" value="0"/>
-	<input type="text" name="e" value="L"/>
+	<input type="text" name="e" value="M"/>
 	<input type="text" name="m" value="Byte"/>
 	<input type="text" name="mb" value="UTF-8"/>
 </form>
@@ -84,20 +84,22 @@ $(document).ready(function(){
 		  				}
 		  			}
 		  		}
-		  		content += "<a href='" + href + "'><img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'></a><br>";
-		  		content += data[i].denominaci +"<br>"
-		  		 		+ "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a><br>"
-		  				+ data[i].comarca_i_municipi +"<br>"
+		  		content += "<div style='clear:both'>"
+		  		content += "<h1>" + data[i].denominaci +"</h1>"
+		  			+ "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a> - <a href='https://www.openstreetmap.org/search?whereami=1&query=" + data[i].latitud + "%2C" + data[i].longitud + "'>mapa</a><br>"  				;
+		  		content += "<div><a href='" + href + "' style='align: left;float: left;padding: 0 10px 0 0;'><img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'></a>" + data[i].descripcio_html + "</div>"
+		  		 		+ data[i].comarca_i_municipi +"<br>"
 		  				+ data[i].data_inici +"<br>"
 		  				+ data[i].horari +"<br>"
 		  				+ "<br/>";
 		  		if (hrefs.length>0){
 		  			content += "<p>Enllaços: <br>";
 		  			for (var j=0; j<hrefs.length; j++){
-		  				content += "<a href='" + hrefs[j] + "'>" + hrefs[j] + "</a><br>"
+		  				content += "<a href='" + hrefs[j] + "'>" + (hrefs[j].length>100 ? hrefs[j].substring(0, 100) + "...": hrefs[j]) + "</a><br>"
 		  			}
 		  			content += "</p>";
 		  		}
+		  		content += "</div>"
 		  		pos ++;
 		  	}
 		  	$('#layList').html(content + sToday);
