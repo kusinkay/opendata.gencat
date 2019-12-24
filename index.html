@@ -85,8 +85,8 @@ $(document).ready(function(){
 		  			}
 		  		}
 		  		content += "<div style='clear:both'>"
-		  		content += "<h1>" + data[i].denominaci +"</h1>"
-		  			+ "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a> - <a href='https://www.openstreetmap.org/search?whereami=1&query=" + data[i].latitud + "%2C" + data[i].longitud + "'>mapa</a><br>"  				;
+		  		content += "<hr><h1>" + data[i].denominaci +"</h1>"
+		  			+ "<a href='javascript:console.log(toICal(" + pos + "))'>QR</a> - <a href='https://www.openstreetmap.org/search?whereami=1&query=" + data[i].latitud + "%2C" + data[i].longitud + "'>mapa</a><br><br>"  				;
 		  		content += "<div><a href='" + href + "' style='align: left;float: left;padding: 0 10px 0 0;'><img src='https://agenda.cultura.gencat.cat/" + imatges[0] + "'></a>" + data[i].descripcio_html + "</div>"
 		  		 		+ data[i].comarca_i_municipi +"<br>"
 		  				+ data[i].data_inici +"<br>"
@@ -99,7 +99,7 @@ $(document).ready(function(){
 		  			}
 		  			content += "</p>";
 		  		}
-		  		content += "</div>"
+		  		content += "</div>";
 		  		pos ++;
 		  	}
 		  	$('#layList').html(content + sToday);
@@ -117,7 +117,7 @@ function toICal(i){
 		"DTSTART;TZID=Europe/Paris:" + iCalDate(events[i].data_inici) + "\n" + 
 		"DTEND;TZID=Europe/Paris:" + iCalDate(events[i].data_fi) + "\n" + 
 		"LOCATION:" + events[i].adre_a + "\n" + 
-		"DESCRIPTION:" + events[i].descripcio + "\n" + 
+		"DESCRIPTION:" + ( events[i].descripcio.length>=250 ? events[i].descripcio.substr(0, 250)+'...': events[i].descripcio ) + "\n" + 
 		"STATUS:CONFIRMED\n" + 
 		"SEQUENCE:1\n" + 
 		"BEGIN:VALARM\n" + 
